@@ -1,0 +1,60 @@
+--  Find out the PG-13 rated comedy movies. DO NOT use the film_list table.
+
+select title, rating 
+from film f,film_category fc,category c
+where f.film_id=fc.film_id
+and fc.category_id=c.category_id
+and rating='PG-13'
+and name='comedy';
+
+--  Find out the top 3 rented horror movies.
+select title, count(title)
+from film f, film_category fc , category c,inventory i,rental r
+where  f.film_id= fc.film_id
+and fc.category_id=c.category_id
+and  f.film_id=i.film_id
+and i.inventory_id=r.inventory_id
+and name='horror'
+group by title
+order by count(title) desc
+limit 3;
+
+--  Find out the list of customers from India who have rented sports movies.
+
+select distinct first_name, last_name 
+from film f, film_category fc , category c,inventory i,rental r, address ad, customer cs, country, city
+where  f.film_id= fc.film_id
+and fc.category_id=c.category_id
+and  f.film_id=i.film_id
+and i.inventory_id=r.inventory_id
+and cs.customer_id=r.customer_id
+and cs.address_id=ad.address_id
+and ad.city_id=city.city_id
+and city.country_id=country.country_id
+and country='india'
+and name='sports';
+
+
+-- Find out the list of customers from Canada who have rented “NICK WAHLBERG” movies.
+
+select distinct cs.first_name, cs.last_name 
+from film_category fc ,inventory i,rental r, address ad, customer cs, country, city,film_actor fa , actor a
+where fc.film_id=i.film_id
+and i.inventory_id=r.inventory_id
+and cs.customer_id=r.customer_id
+and cs.address_id=ad.address_id
+and ad.city_id=city.city_id
+and city.country_id=country.country_id
+and fa.film_id=i.film_id
+and fa.actor_id=a.actor_id
+and country='canada'
+and a.first_name='NICK' 
+and a.last_name='WAHLBERG';
+
+-- Find out the number of movies in which “SEAN WILLIAMS” acted.
+
+SELECT count(a.actor_id) FROM film f, film_actor fa, actor a
+where f.film_id=fa.film_id 
+and a.actor_id=fa.actor_id 
+and a.first_name='SEAN'
+and a.last_name='WILLIAMS';

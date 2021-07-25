@@ -1,0 +1,60 @@
+-- 1. Find out the number of documentaries with deleted scenes.
+
+select count(f.film_id)
+from film f, film_category fc, category c
+where f.film_id=fc.film_id
+and c.category_id=fc.category_id
+and name='Documentary'
+and special_features='deleted scenes';
+
+-- 2. Find out the number of sci-fi movies rented by the store managed by Jon Stephens.
+
+select count(fc.film_id)
+from film_category fc, category c, inventory i, store s, staff st
+where fc.category_id=c.category_id
+and  fc.film_id=i.film_id
+and s.store_id=i.store_id
+and s.store_id=st.store_id
+and c.name='sci-fi'
+and st.first_name='jon' 
+and st.last_name='stephens';
+
+-- 3.Find out the total sales from Animation movies. 
+
+select title, sum(amount) 
+from film f, film_category fc, category c, inventory i, rental r, payment p
+where f.film_id=fc.film_id
+and fc.category_id=c.category_id
+and f.film_id=i.inventory_id
+and i.inventory_id=r.inventory_id
+and p.rental_id=r.rental_id
+and lower(name)='animation'
+group by title
+order by amount desc
+limit 1;
+
+--  Find out the top 3 rented category of movies by “PATRICIA JOHNSON”.
+
+select count(name)
+from customer cs, rental r, inventory i, film f, film_category fc, category c
+where cs.customer_id=r.customer_id
+and r.inventory_id=i.inventory_id
+and i.film_id=f.film_id
+and f.film_id=fc.film_id
+and fc.category_id=c.category_id
+and first_name='PATRICIA'
+and last_name='JOHNSON'
+group by name
+order by count(name) desc
+limit 3;
+
+
+-- 5. Find out the number of R rated movies rented by “SUSAN WILSON”.
+select count(rating)
+from film f, inventory i, rental r, customer c
+where f.film_id=i.film_id
+and i.inventory_id=r.inventory_id
+and r.customer_id= c.customer_id
+and rating='R'
+and first_name='SUSAN'
+and last_name='WILSON';
